@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit PDF – PDFLOVERS</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.216/pdf.min.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      padding: 2rem;
+      background: #f7f9fc;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #2b4eff;
+    }
+    .upload-box {
+      border: 2px dashed #2b4eff;
+      padding: 3rem;
+      text-align: center;
+      border-radius: 12px;
+      background: #f0f4ff;
+      cursor: pointer;
+    }
+    canvas {
+      display: block;
+      margin: 2rem auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit PDF</h1>
+    <div class="upload-box" onclick="document.getElementById('pdfInput').click();">
+      Click here to upload your PDF
+      <input type="file" id="pdfInput" accept="application/pdf" hidden>
+    </div>
+
+    <canvas id="pdfCanvas"></canvas>
+  </div>
+
+  <script>
+    const input = document.getElementById('pdfInput');
+    const canvas = document.getElementById('pdfCanvas');
+    const ctx = canvas.getContext('2d');
+
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file && file.type === "application/pdf") {
+        const fileReader = new FileReader();
+        fileReader.onload = function () {
+          const typedarray = new Uint8Array(this.result);
+
+          pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+            pdf.getPage(1).then(page => {
+              const viewport = page.getViewport({ scale: 1.5 });
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
+
+              page.render({ canvasContext: ctx, viewport: viewport });
+            });
+          });
+        };
+        fileReader.readAsArrayBuffer(file);
+      }
+    });
+  </script>
+</body>
+</html>
