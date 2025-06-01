@@ -41,3 +41,22 @@ body {
 .card.blue { border-left: 6px solid #2196F3; }
 .card.orange { border-left: 6px solid #FF9800; }
 .card.purple { border-left: 6px solid #9C27B0; }
+
+.header-section {
+  text-align: center;
+  margin: 40px auto;
+  max-width: 800px;
+}
+
+.header-section h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.header-section p {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+}
