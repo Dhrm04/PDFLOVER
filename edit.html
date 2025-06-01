@@ -42,7 +42,7 @@
       border-radius: 10px;
       max-width: 100%;
     }
-    .tools {
+    .tools, .navigation {
       text-align: center;
       margin: 1rem auto;
     }
@@ -67,12 +67,17 @@
 
     <div class="tools">
       <button class="tool-btn" onclick="enableDrawing()">Draw</button>
-      <button class="tool-btn" onclick="addText()">Add Text</button>
+      <button class="tool-btn" onclick="enableTextAdding()">Add Text</button>
       <button class="tool-btn" onclick="clearCanvas()">Clear</button>
       <button class="tool-btn" onclick="downloadPDF()">Download PDF</button>
     </div>
 
     <canvas id="pdfCanvas"></canvas>
+
+    <div class="navigation">
+      <button class="tool-btn" onclick="prevPage()">Previous Page</button>
+      <button class="tool-btn" onclick="nextPage()">Next Page</button>
+    </div>
   </div>
 
   <script>
@@ -80,6 +85,9 @@
     const canvas = document.getElementById('pdfCanvas');
     const ctx = canvas.getContext('2d');
     let isDrawing = false;
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
 
     input.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -89,17 +97,35 @@
           const typedarray = new Uint8Array(this.result);
 
           pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-            pdf.getPage(1).then(page => {
-              const viewport = page.getViewport({ scale: 1.5 });
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
-              page.render({ canvasContext: ctx, viewport: viewport });
-            });
+            pdfDoc = pdf;
+            totalPages = pdf.numPages;
+            renderPage(currentPage);
           });
         };
         fileReader.readAsArrayBuffer(file);
       }
     });
+
+    function renderPage(num) {
+      pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        page.render({ canvasContext: ctx, viewport: viewport });
+      });
+    }
+
+    function prevPage() {
+      if (currentPage <= 1) return;
+      currentPage--;
+      renderPage(currentPage);
+    }
+
+    function nextPage() {
+      if (currentPage >= totalPages) return;
+      currentPage++;
+      renderPage(currentPage);
+    }
 
     function enableDrawing() {
       canvas.onmousedown = () => { isDrawing = true; };
@@ -118,22 +144,29 @@
       ctx.moveTo(e.offsetX, e.offsetY);
     }
 
-    function addText() {
-      const text = prompt("Enter text to add:");
-      if (text) {
-        ctx.font = "16px Poppins";
-        ctx.fillStyle = "#000";
-        ctx.fillText(text, 50, 50);
+    function enableTextAdding() {
+      canvas.onclick = function (e) {
+        const text = prompt("Enter text to add:");
+        if (text) {
+          ctx.font = "16px Poppins";
+          ctx.fillStyle = "#000";
+          ctx.fillText(text, e.offsetX, e.offsetY);
+        }
+        canvas.onclick = null;
       }
     }
 
     function clearCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (pdfDoc) renderPage(currentPage);
     }
 
     function downloadPDF() {
+      if (!pdfDoc) {
+        alert("Please upload a PDF before downloading.");
+        return;
+      }
       const imageData = canvas.toDataURL("image/png");
-      const pdfDoc = PDFLib.PDFDocument.create();
       PDFLib.PDFDocument.create().then(async pdfDoc => {
         const page = pdfDoc.addPage([canvas.width, canvas.height]);
         const pngImage = await pdfDoc.embedPng(imageData);
