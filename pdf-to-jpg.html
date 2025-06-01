@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF to JPG - PDFLOVERS</title>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f9f9f9; padding: 20px; }
+    #output img { margin: 10px; max-width: 90%; border: 1px solid #ccc; }
+    button, input { margin: 10px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>PDF to JPG Converter</h1>
+  <input type="file" id="pdfUpload" accept="application/pdf">
+  <div id="output"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script>
+    const pdfUpload = document.getElementById('pdfUpload');
+    const output = document.getElementById('output');
+
+    pdfUpload.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const fileReader = new FileReader();
+      fileReader.onload = async function () {
+        const typedarray = new Uint8Array(this.result);
+
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+
+        output.innerHTML = '';
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 2 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const img = new Image();
+          img.src = canvas.toDataURL('image/jpeg');
+          output.appendChild(img);
+
+          // Download link
+          const link = document.createElement('a');
+          link.href = img.src;
+          link.download = `page-${pageNum}.jpg`;
+          link.textContent = `Download Page ${pageNum}`;
+          link.style.display = 'block';
+          link.style.marginBottom = '20px';
+          output.appendChild(link);
+        }
+      };
+      fileReader.readAsArrayBuffer(file);
+    });
+  </script>
+</body>
+</html>
