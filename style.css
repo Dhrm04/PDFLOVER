@@ -47,7 +47,9 @@
 .signup {
   background-color: #e63946;
   color: white;
-  text-color:white;
+}
+#sign{
+  color: white;
 }
 
 .dropdown {
