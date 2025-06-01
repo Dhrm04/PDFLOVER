@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF to PPT - PDFLOVERS</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
+    input, button { padding: 10px; margin: 10px; }
+    #output { margin-top: 20px; color: green; font-weight: bold; }
+    canvas { display: none; }
+  </style>
+</head>
+<body>
+  <h1>PDF to PPT Converter</h1>
+  <input type="file" id="pdfFile" accept="application/pdf">
+  <br>
+  <button onclick="convertPDFtoPPT()">Convert to PPT</button>
+  <div id="output"></div>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://unpkg.com/pptxgenjs@3.11.0/dist/pptxgen.bundle.js"></script>
+
+  <canvas id="pdf-canvas"></canvas>
+
+  <script>
+    async function convertPDFtoPPT() {
+      const file = document.getElementById('pdfFile').files[0];
+      const output = document.getElementById('output');
+      output.innerHTML = '';
+
+      if (!file) {
+        output.innerHTML = 'Please select a PDF file.';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function () {
+        const typedArray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const pptx = new PptxGenJS();
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 2 });
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
+
+          pptx.addSlide().addImage({ data: dataUrl, x: 0, y: 0, w: 10, h: 5.63 });
+        }
+
+        await pptx.writeFile("converted.pptx");
+        output.innerHTML
