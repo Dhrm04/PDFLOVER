@@ -46,7 +46,7 @@
 
 .signup {
   background-color: #e63946;
-  color: #fff;
+  color: white;
 }
 
 .dropdown {
@@ -185,9 +185,6 @@ body {
   line-height: 1.6;
 }
 
-#sign{
-color:white;
-}
 
 
 .site-footer {
