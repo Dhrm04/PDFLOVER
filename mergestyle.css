@@ -9,7 +9,7 @@ body {
 }
 
 .navbar {
-  background-color: #2b4eff;
+  background-color: #e63946;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -75,7 +75,7 @@ input[type="file"] {
   font-size: 16px;
   border: none;
   border-radius: 8px;
-  background-color: #2b4eff;
+  background-color: #e63946;
   color: white;
   cursor: pointer;
   transition: background 0.3s ease;
