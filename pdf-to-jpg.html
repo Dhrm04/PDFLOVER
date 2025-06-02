@@ -2,165 +2,86 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PDF to JPG - PDFLOVERS</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #fceabb, #f8b500);
-      margin: 0;
-      padding: 30px;
-      text-align: center;
-    }
-     <header class="navbar">
-  <div class="logo">
-    <span style="color: red;">❤️</span><strong>PDFLOVERS</strong>
-  </div>
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-  <nav class="nav-links" id="navMenu">
-    <a href="merge-pdf.html">Merge PDF</a>
-    <a href="split-pdf.html">Split PDF</a>
-    <a href="compress-pdf.html">Compress PDF</a>
-    
-    <div class="dropdown">
-      <a href="#">Convert PDF ▾</a>
-      <div class="dropdown-content">
-        <a href="pdf-to-word.html">PDF to Word</a>
-        <a href="pdf-to-excel.html">PDF to Excel</a>
-        <a href="pdf-to-ppt.html">PDF to PPT</a>
-        <a href="pdf-to-jpg.html">PDF to JPG</a>
-        <a href="jpg-to-pdf.html">JPG to PDF</a>
-      </div>
-    </div>
-    
-    <div class="dropdown">
-      <a href="#">All PDF Tools ▾</a>
-      <div class="dropdown-content">
-        <a href="edit.html">Edit PDF</a>
-        <a href="#">Unlock PDF</a>
-        <a href="#">Rotate PDF</a>
-        <a href="#">Watermark PDF</a>
-      </div>
-    </div>
-
-    <div class="nav-buttons">
-      <a href="#" class="login">Login</a>
-      <a href="#" id="sign" class="signup">Sign up</a>
-    </div>
-  </nav>
-</header>
-    h1 {
-      color: #fff;
-      margin-bottom: 20px;
-      font-size: 32px;
-    }
-    .upload-box {
-      background: #fff;
-      padding: 20px;
-      border-radius: 15px;
-      display: inline-block;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    input[type="file"] {
-      margin-top: 10px;
-      padding: 10px;
-      border: 2px dashed #f8b500;
-      border-radius: 10px;
-      background: #fff8e1;
-      cursor: pointer;
-    }
-    .output-container {
-      margin-top: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      overflow: hidden;
-      width: 300px;
-    }
-    .card img {
-      max-width: 100%;
-      display: block;
-    }
-    .card a {
-      display: block;
-      padding: 12px;
-      background: #f8b500;
-      color: white;
-      font-weight: bold;
-      text-decoration: none;
-      border-top: 1px solid #e0e0e0;
-    }
-    .spinner {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #fff;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header>
+    <h1>PDFLOVERS</h1>
+    <nav>
+      <a href="#">Merge PDF</a>
+      <a href="#">Split PDF</a>
+      <a href="#">Compress PDF</a>
+      <a href="#">Convert PDF</a>
+      <a href="#">All Tools</a>
+    </nav>
+  </header>
 
-  <h1>PDF to JPG Converter</h1>
-  <div class="upload-box">
-    <input type="file" id="pdfUpload" accept="application/pdf" />
-  </div>
+  <main>
+    <h2>PDF to JPG</h2>
+    <p>Convert your PDF pages to high-quality JPG images with just one click.</p>
 
-  <div class="spinner" id="spinner" style="display:none;">Converting pages, please wait...</div>
-  <div class="output-container" id="output"></div>
+    <div class="upload-box">
+      <label class="upload-btn">
+        📁 Select PDF file
+        <input type="file" id="pdfUpload" accept="application/pdf" hidden>
+      </label>
+      <p>or drop PDFs here</p>
+      <button id="convertBtn">Convert to JPG</button>
+    </div>
+
+    <div id="output"></div>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
     const pdfUpload = document.getElementById('pdfUpload');
     const output = document.getElementById('output');
-    const spinner = document.getElementById('spinner');
+    const convertBtn = document.getElementById('convertBtn');
 
-    pdfUpload.addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
+    let selectedFile;
 
-      output.innerHTML = '';
-      spinner.style.display = 'block';
+    pdfUpload.addEventListener('change', (e) => {
+      selectedFile = e.target.files[0];
+    });
 
-      const fileReader = new FileReader();
-      fileReader.onload = async function () {
+    convertBtn.addEventListener('click', async () => {
+      if (!selectedFile) {
+        alert('Please select a PDF file first.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function () {
         const typedarray = new Uint8Array(this.result);
         const pdf = await pdfjsLib.getDocument(typedarray).promise;
 
+        output.innerHTML = '';
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const viewport = page.getViewport({ scale: 2 });
           const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
+          const ctx = canvas.getContext('2d');
+
           canvas.height = viewport.height;
           canvas.width = viewport.width;
 
-          await page.render({ canvasContext: context, viewport }).promise;
+          await page.render({ canvasContext: ctx, viewport }).promise;
 
-          const imgData = canvas.toDataURL('image/jpeg');
-
-          const card = document.createElement('div');
-          card.className = 'card';
-
-          const img = document.createElement('img');
-          img.src = imgData;
+          const img = new Image();
+          img.src = canvas.toDataURL('image/jpeg');
+          output.appendChild(img);
 
           const link = document.createElement('a');
-          link.href = imgData;
+          link.href = img.src;
           link.download = `page-${pageNum}.jpg`;
           link.textContent = `Download Page ${pageNum}`;
-
-          card.appendChild(img);
-          card.appendChild(link);
-          output.appendChild(card);
+          link.className = 'download-link';
+          output.appendChild(link);
         }
-
-        spinner.style.display = 'none';
       };
-      fileReader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(selectedFile);
     });
   </script>
 </body>
