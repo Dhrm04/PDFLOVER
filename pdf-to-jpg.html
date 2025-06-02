@@ -1,35 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PDF to JPG - PDFLOVERS</title>
   <style>
-    body { font-family: Arial; text-align: center; background: #f9f9f9; padding: 20px; }
-    #output img { margin: 10px; max-width: 90%; border: 1px solid #ccc; }
-    button, input { margin: 10px; padding: 10px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      margin: 0;
+      padding: 30px;
+      text-align: center;
+    }
+    h1 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+    .upload-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      display: inline-block;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    input[type="file"] {
+      margin-top: 10px;
+      padding: 10px;
+      border: 2px dashed #f8b500;
+      border-radius: 10px;
+      background: #fff8e1;
+      cursor: pointer;
+    }
+    .output-container {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 300px;
+    }
+    .card img {
+      max-width: 100%;
+      display: block;
+    }
+    .card a {
+      display: block;
+      padding: 12px;
+      background: #f8b500;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      border-top: 1px solid #e0e0e0;
+    }
+    .spinner {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
+
   <h1>PDF to JPG Converter</h1>
-  <input type="file" id="pdfUpload" accept="application/pdf">
-  <div id="output"></div>
+  <div class="upload-box">
+    <input type="file" id="pdfUpload" accept="application/pdf" />
+  </div>
+
+  <div class="spinner" id="spinner" style="display:none;">Converting pages, please wait...</div>
+  <div class="output-container" id="output"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
     const pdfUpload = document.getElementById('pdfUpload');
     const output = document.getElementById('output');
+    const spinner = document.getElementById('spinner');
 
     pdfUpload.addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
+      output.innerHTML = '';
+      spinner.style.display = 'block';
+
       const fileReader = new FileReader();
       fileReader.onload = async function () {
         const typedarray = new Uint8Array(this.result);
-
         const pdf = await pdfjsLib.getDocument(typedarray).promise;
-
-        output.innerHTML = '';
 
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
@@ -41,19 +103,25 @@
 
           await page.render({ canvasContext: context, viewport }).promise;
 
-          const img = new Image();
-          img.src = canvas.toDataURL('image/jpeg');
-          output.appendChild(img);
+          const imgData = canvas.toDataURL('image/jpeg');
 
-          // Download link
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const img = document.createElement('img');
+          img.src = imgData;
+
           const link = document.createElement('a');
-          link.href = img.src;
+          link.href = imgData;
           link.download = `page-${pageNum}.jpg`;
           link.textContent = `Download Page ${pageNum}`;
-          link.style.display = 'block';
-          link.style.marginBottom = '20px';
-          output.appendChild(link);
+
+          card.appendChild(img);
+          card.appendChild(link);
+          output.appendChild(card);
         }
+
+        spinner.style.display = 'none';
       };
       fileReader.readAsArrayBuffer(file);
     });
