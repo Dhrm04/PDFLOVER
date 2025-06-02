@@ -3,18 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>PDF to Excel - PDFLOVERS</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
-    input, button { padding: 10px; margin: 10px; }
-    #output { margin-top: 20px; color: green; font-weight: bold; }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+  <link rel="stylesheet" href="pdftoexcelstyle.css">
 </head>
 <body>
+  <nav class="navbar">
+    <div class="logo">PDFLOVERS</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="merge.html">Merge PDF</a></li>
+      <li><a href="split.html">Split PDF</a></li>
+      <li><a href="compress.html">Compress PDF</a></li>
+      <li><a href="pdftoexcel.html" class="active">PDF to Excel</a></li>
+    </ul>
+  </nav>
+
   <h1>PDF to Excel Converter</h1>
-  <input type="file" id="pdfFile" accept="application/pdf">
-  <br>
-  <button onclick="convertPDFtoExcel()">Convert to Excel</button>
-  <div id="output"></div>
+  <p class="description">Easily extract text from your PDF files into Excel format (.xlsx).</p>
+
+  <div class="upload-area">
+    <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <button class="custom-btn" onclick="convertPDFtoExcel()">Convert to Excel</button>
+    <div id="output"></div>
+  </div>
 
   <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -27,7 +39,8 @@
       output.innerHTML = '';
 
       if (!file) {
-        output.innerHTML = 'Please select a PDF file.';
+        output.style.color = 'red';
+        output.innerHTML = '⚠️ Please select a PDF file.';
         return;
       }
 
@@ -46,12 +59,12 @@
           allText.push([""]);
         }
 
-        // Create worksheet and workbook
         const ws = XLSX.utils.aoa_to_sheet(allText);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "PDF Data");
 
         XLSX.writeFile(wb, "converted.xlsx");
+        output.style.color = 'green';
         output.innerHTML = '✅ Excel file created successfully!';
       };
       reader.readAsArrayBuffer(file);
