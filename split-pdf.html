@@ -3,20 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Split PDF - PDFLOVERS</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
-    input, button { padding: 10px; margin: 10px; }
-    #output { margin-top: 20px; font-weight: bold; color: green; }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+  <link rel="stylesheet" href="splitstyle.css">
 </head>
 <body>
+  <nav class="navbar">
+    <div class="logo">PDFLOVERS</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="merge.html">Merge PDF</a></li>
+      <li><a href="split.html" class="active">Split PDF</a></li>
+      <li><a href="edit.html">Edit PDF</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
   <h1>Split PDF</h1>
-  <input type="file" id="pdfFile" accept="application/pdf">
-  <br>
-  <input type="text" id="pageRange" placeholder="Enter pages (e.g. 1-3,5,7)">
-  <br>
-  <button onclick="splitPDF()">Split PDF</button>
-  <div id="output"></div>
+  <p class="description">Select your PDF and choose the page ranges to extract. Fast and secure PDF splitting with PDFLOVERS.</p>
+
+  <div class="upload-area">
+    <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <input type="text" id="pageRange" placeholder="Enter pages (e.g. 1-3,5,7)">
+    <button class="custom-btn" onclick="splitPDF()">Split PDF</button>
+    <div id="output"></div>
+  </div>
 
   <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -32,4 +43,59 @@
             if (i >= 1 && i <= totalPages) pages.add(i);
           }
         } else {
-          const page = Num
+          const page = Number(range);
+          if (page >= 1 && page <= totalPages) pages.add(page);
+        }
+      }
+      return Array.from(pages).sort((a, b) => a - b);
+    }
+
+    async function splitPDF() {
+      const fileInput = document.getElementById('pdfFile');
+      const rangeInput = document.getElementById('pageRange');
+      const output = document.getElementById('output');
+
+      const file = fileInput.files[0];
+      const range = rangeInput.value;
+
+      if (!file) {
+        output.style.color = 'red';
+        output.textContent = '⚠️ Please select a PDF file.';
+        return;
+      }
+
+      if (!range.trim()) {
+        output.style.color = 'red';
+        output.textContent = '⚠️ Please enter a valid page range.';
+        return;
+      }
+
+      const bytes = await file.arrayBuffer();
+      const pdfDoc = await PDFLib.PDFDocument.load(bytes);
+      const totalPages = pdfDoc.getPageCount();
+      const pagesToExtract = parsePageRange(range, totalPages);
+
+      if (pagesToExtract.length === 0) {
+        output.style.color = 'red';
+        output.textContent = '⚠️ No valid pages selected to extract.';
+        return;
+      }
+
+      const newPdf = await PDFLib.PDFDocument.create();
+      const copiedPages = await newPdf.copyPages(pdfDoc, pagesToExtract.map(p => p - 1));
+      copiedPages.forEach((page) => newPdf.addPage(page));
+
+      const pdfBytes = await newPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'split.pdf';
+      link.click();
+
+      output.style.color = 'green';
+      output.textContent = '✅ PDF split successfully!';
+    }
+  </script>
+</body>
+</html>
