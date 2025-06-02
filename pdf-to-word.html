@@ -3,18 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>PDF to Word - PDFLOVERS</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
-    input, button { padding: 10px; margin: 10px; }
-    #output { margin-top: 20px; color: green; font-weight: bold; }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+  <link rel="stylesheet" href="pdftowordstyle.css">
 </head>
 <body>
+  <nav class="navbar">
+    <div class="logo">PDFLOVERS</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="merge.html">Merge PDF</a></li>
+      <li><a href="split.html">Split PDF</a></li>
+      <li><a href="compress.html">Compress PDF</a></li>
+      <li><a href="pdftoword.html" class="active">PDF to Word</a></li>
+    </ul>
+  </nav>
+
   <h1>PDF to Word Converter</h1>
-  <input type="file" id="pdfFile" accept="application/pdf">
-  <br>
-  <button onclick="convertPDFtoWord()">Convert to Word</button>
-  <div id="output"></div>
+  <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
+
+  <div class="upload-area">
+    <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <button class="custom-btn" onclick="convertPDFtoWord()">Convert to Word</button>
+    <div id="output"></div>
+  </div>
 
   <!-- Required Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -27,7 +39,8 @@
       output.innerHTML = '';
 
       if (!file) {
-        output.innerHTML = 'Please select a PDF file.';
+        output.style.color = 'red';
+        output.innerHTML = '⚠️ Please select a PDF file.';
         return;
       }
 
@@ -43,7 +56,6 @@
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
-
           const text = content.items.map(item => item.str).join(' ');
           paragraphs.push(new Paragraph(text));
         }
@@ -56,6 +68,7 @@
         link.download = "converted.docx";
         link.click();
 
+        output.style.color = 'green';
         output.innerHTML = '✅ Word file created successfully!';
       };
       reader.readAsArrayBuffer(file);
