@@ -3,89 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <title>Merge PDF - PDFLOVERS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f7f9fc;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
+      background: #f4f5fa;
       text-align: center;
       padding: 60px 20px;
     }
     h1 {
-      font-size: 36px;
-      color: #2b4eff;
-      margin-bottom: 10px;
+      color: #2b2d42;
     }
-    p {
-      color: #555;
+    .description {
       font-size: 18px;
       margin-bottom: 30px;
+      color: #4a4a4a;
     }
-    .upload-btn-wrapper {
-      position: relative;
-      display: inline-block;
+    .upload-area {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
     }
-    .btn {
-      border: none;
+    #pdfFiles {
+      display: none;
+    }
+    .custom-btn {
+      background-color: #e63946;
       color: white;
-      background-color: #e60023;
-      padding: 16px 30px;
-      border-radius: 10px;
+      border: none;
+      padding: 16px 28px;
       font-size: 18px;
-      font-weight: 600;
+      border-radius: 8px;
       cursor: pointer;
     }
-    .upload-btn-wrapper input[type=file] {
-      font-size: 100px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-    .drop-text {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #777;
+    .note {
+      margin-top: 12px;
+      color: #888;
     }
     #output {
       margin-top: 20px;
       font-weight: bold;
-      color: green;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Merge PDF files</h1>
-    <p>PDFLOVERS में आप आसानी से एक से ज्यादा PDF फाइल्स को जोड़ सकते हैं। Drag & Drop करें या अपने device से चुनें aur kuch hi seconds me अपनी final PDF बनाएं।</p>
 
-    <div class="upload-btn-wrapper">
-      <button class="btn">Select PDF files</button>
-      <input type="file" id="pdfFiles" accept="application/pdf" multiple>
-    </div>
-    <div class="drop-text"></div>
-    <div style="margin-top: 20px">
-      <button class="btn" onclick="mergePDFs()">Merge PDFs</button>
-    </div>
+  <h1>Merge PDF files</h1>
+  <p class="description">Combine your PDFs in the order you want with the fastest and easiest tool from PDFLOVERS.</p>
+
+  <div class="upload-area">
+    <label for="pdfFiles" class="custom-btn">📁 Select PDF files</label>
+    <input type="file" id="pdfFiles" accept="application/pdf" multiple>
+    <p class="note">or drop PDFs here</p>
+    <button class="custom-btn" onclick="mergePDFs()">Merge PDF</button>
     <div id="output"></div>
   </div>
 
+  <!-- PDF-Lib Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-  <script>
-    async function mergePDFs() {
-      const files = document.getElementById('pdfFiles').files;
-      const output = document.getElementById('output');
-      output.innerHTML = '';
 
-      if (!files.length) {
-        output.innerHTML = '⚠️ कृपया कम से कम 2 PDF फाइल्स चुनें।';
+  <script>
+    const fileInput = document.getElementById('pdfFiles');
+    const output = document.getElementById('output');
+
+    fileInput.addEventListener('change', () => {
+      const files = fileInput.files;
+      if (files.length > 1) {
+        output.style.color = "green";
+        output.textContent = `✅ ${files.length} files selected.`;
+      } else if (files.length === 1) {
+        output.style.color = "red";
+        output.textContent = '⚠️ Please select at least 2 PDF files.';
+      } else {
+        output.textContent = '';
+      }
+    });
+
+    async function mergePDFs() {
+      const files = fileInput.files;
+      output.textContent = '';
+
+      if (files.length < 2) {
+        output.style.color = "red";
+        output.textContent = '⚠️ Please select at least 2 PDF files.';
         return;
       }
 
@@ -106,7 +109,8 @@
       link.download = 'merged.pdf';
       link.click();
 
-      output.innerHTML = '✅ PDF को सफलता जोड़ा गया है!';
+      output.style.color = "green";
+      output.textContent = '✅ PDF files merged successfully!';
     }
   </script>
 </body>
