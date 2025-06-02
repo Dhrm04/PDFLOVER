@@ -7,16 +7,43 @@
   <link rel="stylesheet" href="pdftowordstyle.css">
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">PDFLOVERS</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="merge.html">Merge PDF</a></li>
-      <li><a href="split.html">Split PDF</a></li>
-      <li><a href="compress.html">Compress PDF</a></li>
-      <li><a href="pdftoword.html" class="active">PDF to Word</a></li>
-    </ul>
+  <header class="navbar">
+  <div class="logo">
+    <span style="color: red;">❤️</span><strong>PDFLOVERS</strong>
+  </div>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <nav class="nav-links" id="navMenu">
+    <a href="merge-pdf.html">Merge PDF</a>
+    <a href="split-pdf.html">Split PDF</a>
+    <a href="compress-pdf.html">Compress PDF</a>
+    
+    <div class="dropdown">
+      <a href="#">Convert PDF ▾</a>
+      <div class="dropdown-content">
+        <a href="pdf-to-word.html">PDF to Word</a>
+        <a href="pdf-to-excel.html">PDF to Excel</a>
+        <a href="pdf-to-ppt.html">PDF to PPT</a>
+        <a href="pdf-to-jpg.html">PDF to JPG</a>
+        <a href="jpg-to-pdf.html">JPG to PDF</a>
+      </div>
+    </div>
+    
+    <div class="dropdown">
+      <a href="#">All PDF Tools ▾</a>
+      <div class="dropdown-content">
+        <a href="edit.html">Edit PDF</a>
+        <a href="#">Unlock PDF</a>
+        <a href="#">Rotate PDF</a>
+        <a href="#">Watermark PDF</a>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <a href="#" class="login">Login</a>
+      <a href="#" id="sign" class="signup">Sign up</a>
+    </div>
   </nav>
+</header>
 
   <h1>PDF to Word Converter</h1>
   <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
