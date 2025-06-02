@@ -3,25 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <title>PDF to PPT - PDFLOVERS</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
-    input, button { padding: 10px; margin: 10px; }
-    #output { margin-top: 20px; color: green; font-weight: bold; }
-    canvas { display: none; }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+  <link rel="stylesheet" href="pdftopptstyle.css">
 </head>
 <body>
-  <h1>PDF to PPT Converter</h1>
-  <input type="file" id="pdfFile" accept="application/pdf">
-  <br>
-  <button onclick="convertPDFtoPPT()">Convert to PPT</button>
-  <div id="output"></div>
+  <nav class="navbar">
+    <div class="logo">PDFLOVERS</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="merge.html">Merge PDF</a></li>
+      <li><a href="split.html">Split PDF</a></li>
+      <li><a href="compress.html">Compress PDF</a></li>
+      <li><a href="pdftoppt.html" class="active">PDF to PPT</a></li>
+    </ul>
+  </nav>
+
+  <h1>PDF to PowerPoint Converter</h1>
+  <p class="description">Convert your PDF pages into PowerPoint slides easily and quickly.</p>
+
+  <div class="upload-area">
+    <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <button class="custom-btn" onclick="convertPDFtoPPT()">Convert to PPT</button>
+    <div id="output"></div>
+  </div>
+
+  <canvas id="pdf-canvas" style="display:none;"></canvas>
 
   <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://unpkg.com/pptxgenjs@3.11.0/dist/pptxgen.bundle.js"></script>
-
-  <canvas id="pdf-canvas"></canvas>
 
   <script>
     async function convertPDFtoPPT() {
@@ -30,7 +41,8 @@
       output.innerHTML = '';
 
       if (!file) {
-        output.innerHTML = 'Please select a PDF file.';
+        output.style.color = 'red';
+        output.innerHTML = '⚠️ Please select a PDF file.';
         return;
       }
 
@@ -56,4 +68,12 @@
         }
 
         await pptx.writeFile("converted.pptx");
-        output.innerHTML
+        output.style.color = 'green';
+        output.innerHTML = '✅ PowerPoint file created successfully!';
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
