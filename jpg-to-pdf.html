@@ -1,62 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JPG to PDF - PDFLOVERS</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
-    input, button { padding: 10px; margin: 10px; }
-    #output { margin-top: 20px; color: green; font-weight: bold; }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>JPG to PDF Converter</h1>
-  <input type="file" id="imageUpload" accept="image/*" multiple>
-  <br>
-  <button onclick="convertToPDF()">Convert to PDF</button>
-  <div id="output"></div>
+  <header>
+    <h1>PDFLOVERS</h1>
+    <nav>
+      <a href="#">Merge PDF</a>
+      <a href="#">Split PDF</a>
+      <a href="#">Compress PDF</a>
+      <a href="#">Convert PDF</a>
+      <a href="#">All Tools</a>
+    </nav>
+  </header>
 
-  <!-- jsPDF library -->
+  <main>
+    <h2>JPG to PDF</h2>
+    <p>Convert your images to a single PDF file quickly and easily with PDFLOVERS.</p>
+
+    <div class="upload-box">
+      <label class="upload-btn">
+        📁 Select JPG images
+        <input type="file" id="imageUpload" accept="image/*" multiple hidden>
+      </label>
+      <p>or drop images here</p>
+      <button id="convertBtn">Convert to PDF</button>
+    </div>
+
+    <div id="output"></div>
+  </main>
+
+  <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    async function convertToPDF() {
+    const convertBtn = document.getElementById('convertBtn');
+    const imageUpload = document.getElementById('imageUpload');
+    const output = document.getElementById('output');
+    let selectedFiles = [];
+
+    imageUpload.addEventListener('change', (e) => {
+      selectedFiles = Array.from(e.target.files);
+    });
+
+    convertBtn.addEventListener('click', async () => {
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF();
-      const files = document.getElementById('imageUpload').files;
-      const output = document.getElementById('output');
       output.innerHTML = '';
 
-      if (files.length === 0) {
-        output.innerHTML = 'Please select image files first.';
+      if (selectedFiles.length === 0) {
+        output.textContent = 'Please select image files first.';
         return;
       }
 
       let loaded = 0;
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      selectedFiles.forEach((file, index) => {
         const reader = new FileReader();
-
         reader.onload = function (e) {
           const img = new Image();
           img.onload = function () {
-            const imgWidth = 210; // A4 size width in mm
+            const imgWidth = 210; // A4 width in mm
             const imgHeight = (img.height * imgWidth) / img.width;
 
-            if (i > 0) pdf.addPage();
+            if (index > 0) pdf.addPage();
             pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
 
             loaded++;
-            if (loaded === files.length) {
+            if (loaded === selectedFiles.length) {
               pdf.save("converted.pdf");
-              output.innerHTML = '✅ PDF created successfully!';
+              output.innerHTML = '<span class="success-msg">✅ PDF created successfully!</span>';
             }
           };
           img.src = e.target.result;
         };
         reader.readAsDataURL(file);
-      }
-    }
+      });
+    });
   </script>
 </body>
 </html>
