@@ -4,64 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Edit PDF – PDFLOVERS</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="editstyle.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.216/pdf.min.js"></script>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      padding: 2rem;
-      background: #f7f9fc;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #2b4eff;
-    }
-    .upload-box {
-      border: 2px dashed #2b4eff;
-      padding: 3rem;
-      text-align: center;
-      border-radius: 12px;
-      background: #f0f4ff;
-      cursor: pointer;
-    }
-    canvas {
-      display: block;
-      margin: 2rem auto;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      max-width: 100%;
-    }
-    .tools, .navigation {
-      text-align: center;
-      margin: 1rem auto;
-    }
-    .tool-btn {
-      padding: 10px 16px;
-      margin: 0.5rem;
-      background-color: #2b4eff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Edit PDF</h1>
+  <header>
+    <h1>PDFLOVERS</h1>
+    <nav>
+      <a href="#">Merge PDF</a>
+      <a href="#">Split PDF</a>
+      <a href="#">Compress PDF</a>
+      <a href="#">Convert PDF</a>
+      <a href="#">All Tools</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Edit PDF</h2>
+    <p>Edit your PDF by drawing, adding text, and more directly in your browser.</p>
+
     <div class="upload-box" onclick="document.getElementById('pdfInput').click();">
-      Click here to upload your PDF
+      📁 Click here to upload your PDF
       <input type="file" id="pdfInput" accept="application/pdf" hidden>
     </div>
 
@@ -78,7 +43,7 @@
       <button class="tool-btn" onclick="prevPage()">Previous Page</button>
       <button class="tool-btn" onclick="nextPage()">Next Page</button>
     </div>
-  </div>
+  </main>
 
   <script>
     const input = document.getElementById('pdfInput');
@@ -95,7 +60,6 @@
         const fileReader = new FileReader();
         fileReader.onload = function () {
           const typedarray = new Uint8Array(this.result);
-
           pdfjsLib.getDocument(typedarray).promise.then(pdf => {
             pdfDoc = pdf;
             totalPages = pdf.numPages;
@@ -137,7 +101,7 @@
       if (!isDrawing) return;
       ctx.lineWidth = 2;
       ctx.lineCap = 'round';
-      ctx.strokeStyle = '#ff0000';
+      ctx.strokeStyle = '#e53935';
       ctx.lineTo(e.offsetX, e.offsetY);
       ctx.stroke();
       ctx.beginPath();
