@@ -20,13 +20,89 @@ header h1 {
   font-size: 24px;
 }
 
-nav a {
-  margin: 0 10px;
+/* Base Navbar Style */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  margin: 10px;
   text-decoration: none;
-  color: #333;
+  color: black;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.nav-buttons a {
+  margin-left: 10px;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 6px;
   font-weight: 500;
 }
 
+.login {
+  color: #000;
+}
+
+.signup {
+  background-color: #e63946;
+  color: white;
+}
+#sign{
+  color: white;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  top: 35px;
+  left: 0;
+  min-width: 180px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px 15px;
+  color: #000;
+  text-decoration: none;
+}
+
+.dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 main {
   padding: 60px 20px;
 }
