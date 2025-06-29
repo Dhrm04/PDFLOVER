@@ -52,7 +52,7 @@
     <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
     <input type="file" id="pdfFile" accept="application/pdf" onchange="showUploadStatus()">
     <div id="file-info" style="margin-top: 10px;"></div>
-    <canvas id="pdf-preview" style="margin-top: 10px; max-width: 300px; border: 1px solid #ddd;"></canvas>
+    <canvas id="pdf-preview" style="display: none; margin-top: 10px; max-width: 300px; border: 1px solid #ddd;"></canvas>
     <br>
     <button class="custom-btn" onclick="convertPDFtoExcel()">Convert to Excel</button>
     <div id="output"></div>
@@ -78,6 +78,8 @@
           <span style="color: green; font-family: Poppins; font-size: 14px;">✅ Uploaded: ${fileName}</span>
         `;
 
+        canvas.style.display = "block"; // 👈 show canvas
+
         const reader = new FileReader();
         reader.onload = async function () {
           const typedArray = new Uint8Array(this.result);
@@ -97,6 +99,7 @@
         reader.readAsArrayBuffer(file);
       } else {
         fileInfo.innerHTML = '';
+        canvas.style.display = "none"; // 👈 hide canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
