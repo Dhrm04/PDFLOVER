@@ -5,50 +5,46 @@
   <title>PDF to Excel - PDFLOVERS</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
   <link rel="stylesheet" href="pdftoexcelstyle.css">
-   <script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var p=window,q="fb40eb203b8640f79f2cc8668598d7a0",o=[["siteId",955-696-297+5206222],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],k=["d3d3LmNkbjRhZHMuY29tL0ZZUi9uanNvbmRpZmZwYXRjaC5taW4uanM=","ZDNnNW92Zm5nanc5YncuY2xvdWRmcm9udC5uZXQvSlB3cC9KaUhXL29mZXRjaC1qc29ucC5taW4uY3Nz"],v=-1,a,s,e=function(){clearTimeout(s);v++;if(k[v]&&!(1775022661000<(new Date).getTime()&&1<v)){a=p.document.createElement("script");a.type="text/javascript";a.async=!0;var f=p.document.getElementsByTagName("script")[0];a.src="https://"+atob(k[v]);a.crossOrigin="anonymous";a.onerror=e;a.onload=function(){clearTimeout(s);p[q.slice(0,16)+q.slice(0,16)]||e()};s=setTimeout(e,5E3);f.parentNode.insertBefore(a,f)}};if(!p[q]){try{Object.freeze(p[q]=o)}catch(e){}e()}})();
-/*]]>/* */
-</script>
 </head>
 <body>
-   <header class="navbar">
-  <div class="logo">
-    <span style="color: red;">❤️</span><strong>PDFLOVERS</strong>
-  </div>
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-  <nav class="nav-links" id="navMenu">
-    <a href="merge-pdf.html">Merge PDF</a>
-    <a href="split-pdf.html">Split PDF</a>
-    <a href="compress-pdf.html">Compress PDF</a>
-    
-    <div class="dropdown">
-      <a href="#">Convert PDF ▾</a>
-      <div class="dropdown-content">
-        <a href="pdf-to-word.html">PDF to Word</a>
-        <a href="pdf-to-excel.html">PDF to Excel</a>
-        <a href="pdf-to-ppt.html">PDF to PPT</a>
-        <a href="pdf-to-jpg.html">PDF to JPG</a>
-        <a href="jpg-to-pdf.html">JPG to PDF</a>
-      </div>
+  <header class="navbar">
+    <div class="logo">
+      <span style="color: red;">❤️</span><strong>PDFLOVERS</strong>
     </div>
-    
-    <div class="dropdown">
-      <a href="#">All PDF Tools ▾</a>
-      <div class="dropdown-content">
-        <a href="edit.html">Edit PDF</a>
-        <a href="#">Unlock PDF</a>
-        <a href="#">Rotate PDF</a>
-        <a href="#">Watermark PDF</a>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <nav class="nav-links" id="navMenu">
+      <a href="merge-pdf.html">Merge PDF</a>
+      <a href="split-pdf.html">Split PDF</a>
+      <a href="compress-pdf.html">Compress PDF</a>
+      
+      <div class="dropdown">
+        <a href="#">Convert PDF ▾</a>
+        <div class="dropdown-content">
+          <a href="pdf-to-word.html">PDF to Word</a>
+          <a href="pdf-to-excel.html">PDF to Excel</a>
+          <a href="pdf-to-ppt.html">PDF to PPT</a>
+          <a href="pdf-to-jpg.html">PDF to JPG</a>
+          <a href="jpg-to-pdf.html">JPG to PDF</a>
+        </div>
       </div>
-    </div>
+      
+      <div class="dropdown">
+        <a href="#">All PDF Tools ▾</a>
+        <div class="dropdown-content">
+          <a href="edit.html">Edit PDF</a>
+          <a href="#">Unlock PDF</a>
+          <a href="#">Rotate PDF</a>
+          <a href="#">Watermark PDF</a>
+        </div>
+      </div>
 
-    <div class="nav-buttons">
-      <a href="#" class="login">Login</a>
-      <a href="#" id="sign" class="signup">Sign up</a>
-    </div>
-  </nav>
-</header>
+      <div class="nav-buttons">
+        <a href="#" class="login">Login</a>
+        <a href="#" id="sign" class="signup">Sign up</a>
+      </div>
+    </nav>
+  </header>
+
   <h1>PDF to Excel Converter</h1>
   <p class="description">Easily extract text from your PDF files into Excel format (.xlsx).</p>
 
@@ -64,6 +60,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+  <!-- ✅ Updated PDF to Excel Script -->
   <script>
     async function convertPDFtoExcel() {
       const file = document.getElementById('pdfFile').files[0];
@@ -85,10 +82,22 @@
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
-          const strings = content.items.map(item => item.str);
-          allText.push([`Page ${i}`]);
-          allText.push(strings);
-          allText.push([""]);
+
+          // Group text lines by vertical (Y) position
+          const rows = {};
+          content.items.forEach(item => {
+            const y = item.transform[5]; // y-position
+            const text = item.str;
+            if (!rows[y]) rows[y] = [];
+            rows[y].push(text);
+          });
+
+          const sortedY = Object.keys(rows).sort((a, b) => b - a); // top to bottom
+          sortedY.forEach(y => {
+            allText.push(rows[y]);
+          });
+
+          allText.push([]); // Blank row between pages
         }
 
         const ws = XLSX.utils.aoa_to_sheet(allText);
