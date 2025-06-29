@@ -50,7 +50,8 @@
 
   <div class="upload-area">
     <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
-    <input type="file" id="pdfFile" accept="application/pdf">
+    <input type="file" id="pdfFile" accept="application/pdf" onchange="showUploadStatus()">
+    <div id="file-info" style="margin-top: 10px;"></div>
     <br>
     <button class="custom-btn" onclick="convertPDFtoExcel()">Convert to Excel</button>
     <div id="output"></div>
@@ -60,7 +61,28 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <!-- ✅ Updated PDF to Excel Script -->
+  <!-- ✅ Upload Status Function -->
+  <script>
+    function showUploadStatus() {
+      const fileInput = document.getElementById('pdfFile');
+      const fileInfo = document.getElementById('file-info');
+
+      if (fileInput.files.length > 0) {
+        const fileName = fileInput.files[0].name;
+
+        fileInfo.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 10px; font-family: Poppins; font-size: 14px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" width="24" height="24" alt="PDF Icon">
+            <span style="color: green;">✅ Uploaded: ${fileName}</span>
+          </div>
+        `;
+      } else {
+        fileInfo.innerHTML = '';
+      }
+    }
+  </script>
+
+  <!-- ✅ PDF to Excel Script -->
   <script>
     async function convertPDFtoExcel() {
       const file = document.getElementById('pdfFile').files[0];
@@ -79,37 +101,4 @@
         const pdf = await pdfjsLib.getDocument(typedArray).promise;
         let allText = [];
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-
-          // Group text lines by vertical (Y) position
-          const rows = {};
-          content.items.forEach(item => {
-            const y = item.transform[5]; // y-position
-            const text = item.str;
-            if (!rows[y]) rows[y] = [];
-            rows[y].push(text);
-          });
-
-          const sortedY = Object.keys(rows).sort((a, b) => b - a); // top to bottom
-          sortedY.forEach(y => {
-            allText.push(rows[y]);
-          });
-
-          allText.push([]); // Blank row between pages
-        }
-
-        const ws = XLSX.utils.aoa_to_sheet(allText);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "PDF Data");
-
-        XLSX.writeFile(wb, "converted.xlsx");
-        output.style.color = 'green';
-        output.innerHTML = '✅ Excel file created successfully!';
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  </script>
-</body>
-</html>
+        for (let i = 1; i <= pdf
