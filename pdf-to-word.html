@@ -96,9 +96,9 @@
     }
   </style>
 
-  <!-- ✅ Correct Libraries -->
+  <!-- ✅ Working Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-  <script src="https://unpkg.com/docx@8.0.4/build/index.umd.js"></script>
+  <script src="https://unpkg.com/docx@8.3.0/build/index.umd.js"></script>
 </head>
 <body>
 
@@ -133,7 +133,7 @@
     </nav>
   </header>
 
-  <!-- ✅ Heading -->
+  <!-- ✅ Page Heading -->
   <h1>PDF to Word Converter</h1>
   <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
 
@@ -168,64 +168,67 @@
         return;
       }
 
+      if (!window.docx) {
+        output.style.color = 'red';
+        output.innerHTML = '❌ Error: docx library not loaded. Please check internet connection or script source.';
+        return;
+      }
+
+      const { Document, Packer, Paragraph, Media } = window.docx;
+
       try {
         const reader = new FileReader();
         reader.onload = async function () {
-          try {
-            const typedArray = new Uint8Array(this.result);
-            const pdf = await pdfjsLib.getDocument(typedArray).promise;
-            const { Document, Packer, Paragraph, Media } = window.docx;
+          const typedArray = new Uint8Array(this.result);
+          const pdf = await pdfjsLib.getDocument(typedArray).promise;
 
-            const doc = new Document();
-            const children = [];
+          const doc = new Document();
+          const children = [];
 
-            for (let i = 1; i <= pdf.numPages; i++) {
-              const page = await pdf.getPage(i);
-              const viewport = page.getViewport({ scale: 2 });
-              const canvas = document.createElement('canvas');
-              const context = canvas.getContext('2d');
-              canvas.width = viewport.width;
-              canvas.height = viewport.height;
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 2 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
 
-              await page.render({ canvasContext: context, viewport: viewport }).promise;
+            await page.render({ canvasContext: context, viewport }).promise;
 
-              const content = await page.getTextContent();
-              const text = content.items.map(item => item.str).join(' ').trim();
+            const content = await page.getTextContent();
+            const text = content.items.map(item => item.str).join(' ').trim();
 
-              if (text.length > 10) {
-                children.push(new Paragraph(text));
-              } else {
-                const imageBase64 = canvas.toDataURL('image/jpeg');
-                const image = Media.addImage(doc, imageBase64);
-                children.push(image);
-              }
-
-              children.push(new Paragraph(""));
+            if (text.length > 10) {
+              children.push(new Paragraph(text));
+            } else {
+              const imageBase64 = canvas.toDataURL('image/jpeg');
+              const image = Media.addImage(doc, imageBase64);
+              children.push(image);
             }
 
-            doc.addSection({ children });
-
-            const blob = await Packer.toBlob(doc);
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "converted.docx";
-            link.click();
-
-            output.style.color = 'green';
-            output.innerHTML = '✅ Word file created successfully!';
-          } catch (err) {
-            output.style.color = 'red';
-            output.innerHTML = '❌ Error during conversion: ' + err.message;
-            console.error(err);
+            children.push(new Paragraph(""));
           }
+
+          doc.addSection({ children });
+
+          const blob = await Packer.toBlob(doc);
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "converted.docx";
+          link.click();
+
+          output.style.color = 'green';
+          output.innerHTML = '✅ Word file created successfully!';
         };
+
         reader.readAsArrayBuffer(file);
       } catch (e) {
         output.style.color = 'red';
-        output.innerHTML = '❌ Failed to process file: ' + e.message;
+        output.innerHTML = '❌ Error during conversion: ' + e.message;
         console.error(e);
       }
     }
   </script>
+
 </body>
 </html>
