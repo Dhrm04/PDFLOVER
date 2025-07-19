@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>PDF to Word - PDFLOVERS</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
-  <link rel="stylesheet" href="pdftowordstyle.css" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -96,6 +95,10 @@
       font-weight: bold;
     }
   </style>
+
+  <!-- ✅ Correct Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://unpkg.com/docx@8.0.4/build/index.umd.js"></script>
 </head>
 <body>
 
@@ -130,11 +133,11 @@
     </nav>
   </header>
 
-  <!-- ✅ Page Heading -->
+  <!-- ✅ Heading -->
   <h1>PDF to Word Converter</h1>
   <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
 
-  <!-- ✅ File Upload & Conversion Area -->
+  <!-- ✅ Upload Area -->
   <div class="upload-area">
     <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
     <input type="file" id="pdfFile" accept="application/pdf">
@@ -142,10 +145,6 @@
     <button class="custom-btn" onclick="convertPDFtoWord()">Convert to Word</button>
     <div id="output"></div>
   </div>
-
-  <!-- ✅ Required JS Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.4/docx.umd.min.js"></script>
 
   <!-- ✅ JS Functionality -->
   <script>
@@ -228,6 +227,5 @@
       }
     }
   </script>
-
 </body>
 </html>
