@@ -1,58 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PDF to Word - PDFLOVERS</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
-  <link rel="stylesheet" href="pdftowordstyle.css">
-   <script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var p=window,q="fb40eb203b8640f79f2cc8668598d7a0",o=[["siteId",955-696-297+5206222],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],k=["d3d3LmNkbjRhZHMuY29tL0ZZUi9uanNvbmRpZmZwYXRjaC5taW4uanM=","ZDNnNW92Zm5nanc5YncuY2xvdWRmcm9udC5uZXQvSlB3cC9KaUhXL29mZXRjaC1qc29ucC5taW4uY3Nz"],v=-1,a,s,e=function(){clearTimeout(s);v++;if(k[v]&&!(1775022661000<(new Date).getTime()&&1<v)){a=p.document.createElement("script");a.type="text/javascript";a.async=!0;var f=p.document.getElementsByTagName("script")[0];a.src="https://"+atob(k[v]);a.crossOrigin="anonymous";a.onerror=e;a.onload=function(){clearTimeout(s);p[q.slice(0,16)+q.slice(0,16)]||e()};s=setTimeout(e,5E3);f.parentNode.insertBefore(a,f)}};if(!p[q]){try{Object.freeze(p[q]=o)}catch(e){}e()}})();
-/*]]>/* */
-</script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
+  <link rel="stylesheet" href="pdftowordstyle.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      text-align: center;
+    }
+    .navbar {
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .nav-links a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+      display: block;
+      padding: 10px;
+      color: #333;
+      text-decoration: none;
+    }
+    .dropdown-content a:hover {
+      background-color: #f0f0f0;
+    }
+    h1 {
+      margin-top: 40px;
+    }
+    .description {
+      margin: 10px auto 30px;
+      max-width: 600px;
+      font-size: 1rem;
+      color: #555;
+    }
+    .upload-area {
+      background: #fff;
+      margin: auto;
+      max-width: 500px;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .custom-btn {
+      display: inline-block;
+      margin: 10px 0;
+      padding: 12px 20px;
+      background-color: red;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .custom-btn:hover {
+      background-color: darkred;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ✅ Navbar -->
   <header class="navbar">
-  <div class="logo">
-    <span style="color: red;">❤️</span><strong>PDFLOVERS</strong>
-  </div>
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-  <nav class="nav-links" id="navMenu">
-    <a href="merge-pdf.html">Merge PDF</a>
-    <a href="split-pdf.html">Split PDF</a>
-    <a href="compress-pdf.html">Compress PDF</a>
-    
-    <div class="dropdown">
-      <a href="#">Convert PDF ▾</a>
-      <div class="dropdown-content">
-        <a href="pdf-to-word.html">PDF to Word</a>
-        <a href="pdf-to-excel.html">PDF to Excel</a>
-        <a href="pdf-to-ppt.html">PDF to PPT</a>
-        <a href="pdf-to-jpg.html">PDF to JPG</a>
-        <a href="jpg-to-pdf.html">JPG to PDF</a>
-      </div>
-    </div>
-    
-    <div class="dropdown">
-      <a href="#">All PDF Tools ▾</a>
-      <div class="dropdown-content">
-        <a href="edit.html">Edit PDF</a>
-        <a href="#">Unlock PDF</a>
-        <a href="#">Rotate PDF</a>
-        <a href="#">Watermark PDF</a>
-      </div>
-    </div>
+    <div class="logo"><span style="color: red;">❤️</span> <strong>PDFLOVERS</strong></div>
+    <nav class="nav-links">
+      <a href="merge-pdf.html">Merge PDF</a>
+      <a href="split-pdf.html">Split PDF</a>
+      <a href="compress-pdf.html">Compress PDF</a>
 
-    <div class="nav-buttons">
-      <a href="#" class="login">Login</a>
-      <a href="#" id="sign" class="signup">Sign up</a>
-    </div>
-  </nav>
-</header>
+      <div class="dropdown">
+        <a href="#">Convert PDF ▾</a>
+        <div class="dropdown-content">
+          <a href="pdf-to-word.html">PDF to Word</a>
+          <a href="pdf-to-excel.html">PDF to Excel</a>
+          <a href="pdf-to-ppt.html">PDF to PPT</a>
+          <a href="pdf-to-jpg.html">PDF to JPG</a>
+          <a href="jpg-to-pdf.html">JPG to PDF</a>
+        </div>
+      </div>
 
+      <div class="dropdown">
+        <a href="#">All PDF Tools ▾</a>
+        <div class="dropdown-content">
+          <a href="edit.html">Edit PDF</a>
+          <a href="#">Unlock PDF</a>
+          <a href="#">Rotate PDF</a>
+          <a href="#">Watermark PDF</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ✅ Page Heading -->
   <h1>PDF to Word Converter</h1>
   <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
 
+  <!-- ✅ File Upload & Conversion Area -->
   <div class="upload-area">
     <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
     <input type="file" id="pdfFile" accept="application/pdf">
@@ -61,14 +143,24 @@
     <div id="output"></div>
   </div>
 
-  <!-- Required Libraries -->
+  <!-- ✅ Required JS Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.4/docx.umd.min.js"></script>
 
+  <!-- ✅ JS Functionality -->
   <script>
+    const fileInput = document.getElementById('pdfFile');
+    const output = document.getElementById('output');
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        output.style.color = 'green';
+        output.innerHTML = '✅ File uploaded successfully!';
+      }
+    });
+
     async function convertPDFtoWord() {
-      const file = document.getElementById('pdfFile').files[0];
-      const output = document.getElementById('output');
+      const file = fileInput.files[0];
       output.innerHTML = '';
 
       if (!file) {
@@ -77,35 +169,65 @@
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = async function () {
-        const typedArray = new Uint8Array(this.result);
-        const pdf = await pdfjsLib.getDocument(typedArray).promise;
-        const { Document, Packer, Paragraph } = window.docx;
+      try {
+        const reader = new FileReader();
+        reader.onload = async function () {
+          try {
+            const typedArray = new Uint8Array(this.result);
+            const pdf = await pdfjsLib.getDocument(typedArray).promise;
+            const { Document, Packer, Paragraph, Media } = window.docx;
 
-        const doc = new Document();
-        const paragraphs = [];
+            const doc = new Document();
+            const children = [];
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          const text = content.items.map(item => item.str).join(' ');
-          paragraphs.push(new Paragraph(text));
-        }
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const page = await pdf.getPage(i);
+              const viewport = page.getViewport({ scale: 2 });
+              const canvas = document.createElement('canvas');
+              const context = canvas.getContext('2d');
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
 
-        doc.addSection({ children: paragraphs });
+              await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-        const blob = await Packer.toBlob(doc);
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "converted.docx";
-        link.click();
+              const content = await page.getTextContent();
+              const text = content.items.map(item => item.str).join(' ').trim();
 
-        output.style.color = 'green';
-        output.innerHTML = '✅ Word file created successfully!';
-      };
-      reader.readAsArrayBuffer(file);
+              if (text.length > 10) {
+                children.push(new Paragraph(text));
+              } else {
+                const imageBase64 = canvas.toDataURL('image/jpeg');
+                const image = Media.addImage(doc, imageBase64);
+                children.push(image);
+              }
+
+              children.push(new Paragraph(""));
+            }
+
+            doc.addSection({ children });
+
+            const blob = await Packer.toBlob(doc);
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "converted.docx";
+            link.click();
+
+            output.style.color = 'green';
+            output.innerHTML = '✅ Word file created successfully!';
+          } catch (err) {
+            output.style.color = 'red';
+            output.innerHTML = '❌ Error during conversion: ' + err.message;
+            console.error(err);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (e) {
+        output.style.color = 'red';
+        output.innerHTML = '❌ Failed to process file: ' + e.message;
+        console.error(e);
+      }
     }
   </script>
+
 </body>
 </html>
