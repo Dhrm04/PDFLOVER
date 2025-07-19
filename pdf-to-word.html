@@ -96,7 +96,7 @@
     }
   </style>
 
-  <!-- ✅ Working Libraries -->
+  <!-- ✅ Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://unpkg.com/docx@8.3.0/build/index.umd.js"></script>
 </head>
@@ -133,7 +133,7 @@
     </nav>
   </header>
 
-  <!-- ✅ Page Heading -->
+  <!-- ✅ Heading -->
   <h1>PDF to Word Converter</h1>
   <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
 
@@ -170,7 +170,7 @@
 
       if (!window.docx) {
         output.style.color = 'red';
-        output.innerHTML = '❌ Error: docx library not loaded. Please check internet connection or script source.';
+        output.innerHTML = '❌ Error: docx library not loaded.';
         return;
       }
 
@@ -212,10 +212,14 @@
           doc.addSection({ children });
 
           const blob = await Packer.toBlob(doc);
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = "converted.docx";
-          link.click();
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = "converted.docx";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(blobUrl);
 
           output.style.color = 'green';
           output.innerHTML = '✅ Word file created successfully!';
@@ -229,6 +233,5 @@
       }
     }
   </script>
-
 </body>
 </html>
