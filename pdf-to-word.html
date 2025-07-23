@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
-    // ✅ Fix PDF.js worker error
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
   <script src="https://unpkg.com/docx@8.3.0/build/index.umd.js"></script>
@@ -81,9 +80,9 @@
   <header class="navbar">
     <div class="logo"><span style="color: red;">❤️</span> <strong>PDFLOVERS</strong></div>
     <nav class="nav-links">
-      <a href="#">Merge PDF</a>
-      <a href="#">Split PDF</a>
-      <a href="#">Compress PDF</a>
+      <a href="merge-pdf.html">Merge PDF</a>
+      <a href="split-pdf.html">Split PDF</a>
+      <a href="compress-pdf.html">Compress PDF</a>
     </nav>
   </header>
 
@@ -92,7 +91,7 @@
 
   <div class="upload-area">
     <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
-    <input type="file" id="pdfFile" accept="application/pdf" />
+    <input type="file" id="pdfFile" accept="application/pdf">
     <br />
     <button class="custom-btn" onclick="convertPDFtoWord()">Convert to Word</button>
     <div id="output"></div>
@@ -125,11 +124,6 @@
           const typedArray = new Uint8Array(this.result);
           const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
           const { Document, Packer, Paragraph, Media } = window.docx;
-         const doc = new Document({
-              creator: "PDFLOVERS",
-              title: "Converted PDF",
-              description: "PDF to Word generated document"
-          });
           const children = [];
 
           for (let i = 1; i <= pdf.numPages; i++) {
@@ -149,14 +143,23 @@
               children.push(new Paragraph(text));
             } else {
               const imageBase64 = canvas.toDataURL("image/jpeg");
-              const image = Media.addImage(doc, imageBase64);
+              const image = Media.addImage(new Document(), imageBase64);
               children.push(image);
             }
 
             children.push(new Paragraph(""));
           }
 
-          doc.addSection({ children });
+          const doc = new Document({
+            creator: "PDFLOVERS",
+            title: "Converted PDF",
+            description: "PDF to Word generated document",
+            sections: [
+              {
+                children: children
+              }
+            ]
+          });
 
           const blob = await Packer.toBlob(doc);
           const url = URL.createObjectURL(blob);
