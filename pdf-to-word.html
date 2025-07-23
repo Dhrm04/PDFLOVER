@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>PDF to Word - PDFLOVERS</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
   <style>
     body {
@@ -95,7 +96,6 @@
       font-weight: bold;
     }
   </style>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://unpkg.com/docx@8.3.0/build/index.umd.js"></script>
 </head>
@@ -172,8 +172,8 @@
 
             await page.render({ canvasContext: context, viewport }).promise;
 
-            const textContent = await page.getTextContent();
-            const text = textContent.items.map(item => item.str).join(' ').trim();
+            const content = await page.getTextContent();
+            const text = content.items.map(item => item.str).join(' ').trim();
 
             if (text.length > 10) {
               children.push(new Paragraph(text));
@@ -190,23 +190,22 @@
 
           const blob = await Packer.toBlob(doc);
           const blobUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = blobUrl;
-          a.download = "converted.docx";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = "converted.docx";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
           URL.revokeObjectURL(blobUrl);
 
           output.style.color = 'green';
           output.innerHTML = '✅ Word file created and downloading!';
         };
-
         reader.readAsArrayBuffer(file);
-      } catch (err) {
+      } catch (e) {
         output.style.color = 'red';
-        output.innerHTML = '❌ Error: ' + err.message;
-        console.error(err);
+        output.innerHTML = '❌ Error during conversion: ' + e.message;
+        console.error(e);
       }
     }
   </script>
