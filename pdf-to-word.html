@@ -96,48 +96,33 @@
     }
   </style>
 
-  <!-- ✅ Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://unpkg.com/docx@8.3.0/build/index.umd.js"></script>
 </head>
 <body>
 
-  <!-- ✅ Navbar -->
   <header class="navbar">
     <div class="logo"><span style="color: red;">❤️</span> <strong>PDFLOVERS</strong></div>
     <nav class="nav-links">
-      <a href="merge-pdf.html">Merge PDF</a>
-      <a href="split-pdf.html">Split PDF</a>
-      <a href="compress-pdf.html">Compress PDF</a>
-
+      <a href="#">Merge PDF</a>
+      <a href="#">Split PDF</a>
+      <a href="#">Compress PDF</a>
       <div class="dropdown">
         <a href="#">Convert PDF ▾</a>
         <div class="dropdown-content">
-          <a href="pdf-to-word.html">PDF to Word</a>
-          <a href="pdf-to-excel.html">PDF to Excel</a>
-          <a href="pdf-to-ppt.html">PDF to PPT</a>
-          <a href="pdf-to-jpg.html">PDF to JPG</a>
-          <a href="jpg-to-pdf.html">JPG to PDF</a>
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <a href="#">All PDF Tools ▾</a>
-        <div class="dropdown-content">
-          <a href="edit.html">Edit PDF</a>
-          <a href="#">Unlock PDF</a>
-          <a href="#">Rotate PDF</a>
-          <a href="#">Watermark PDF</a>
+          <a href="#">PDF to Word</a>
+          <a href="#">PDF to Excel</a>
+          <a href="#">PDF to PPT</a>
+          <a href="#">PDF to JPG</a>
+          <a href="#">JPG to PDF</a>
         </div>
       </div>
     </nav>
   </header>
 
-  <!-- ✅ Heading -->
   <h1>PDF to Word Converter</h1>
   <p class="description">Convert your PDF files to editable Word documents. Fast, secure and easy with PDFLOVERS.</p>
 
-  <!-- ✅ Upload Area -->
   <div class="upload-area">
     <label for="pdfFile" class="custom-btn">📁 Select PDF file</label>
     <input type="file" id="pdfFile" accept="application/pdf">
@@ -146,7 +131,6 @@
     <div id="output"></div>
   </div>
 
-  <!-- ✅ JS Functionality -->
   <script>
     const fileInput = document.getElementById('pdfFile');
     const output = document.getElementById('output');
@@ -168,20 +152,13 @@
         return;
       }
 
-      if (!window.docx) {
-        output.style.color = 'red';
-        output.innerHTML = '❌ Error: docx library not loaded.';
-        return;
-      }
-
-      const { Document, Packer, Paragraph, Media } = window.docx;
-
       try {
         const reader = new FileReader();
         reader.onload = async function () {
           const typedArray = new Uint8Array(this.result);
           const pdf = await pdfjsLib.getDocument(typedArray).promise;
 
+          const { Document, Packer, Paragraph, Media } = window.docx;
           const doc = new Document();
           const children = [];
 
@@ -195,8 +172,8 @@
 
             await page.render({ canvasContext: context, viewport }).promise;
 
-            const content = await page.getTextContent();
-            const text = content.items.map(item => item.str).join(' ').trim();
+            const textContent = await page.getTextContent();
+            const text = textContent.items.map(item => item.str).join(' ').trim();
 
             if (text.length > 10) {
               children.push(new Paragraph(text));
@@ -222,14 +199,14 @@
           URL.revokeObjectURL(blobUrl);
 
           output.style.color = 'green';
-          output.innerHTML = '✅ Word file created successfully!';
+          output.innerHTML = '✅ Word file created and downloading!';
         };
 
         reader.readAsArrayBuffer(file);
-      } catch (e) {
+      } catch (err) {
         output.style.color = 'red';
-        output.innerHTML = '❌ Error during conversion: ' + e.message;
-        console.error(e);
+        output.innerHTML = '❌ Error: ' + err.message;
+        console.error(err);
       }
     }
   </script>
